@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Java Basics MCQ Quiz</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f2f5f9;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .quiz-container {
+            width: 100%;
+            max-width: 700px;
+            background: white;
+            padding: 35px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        h1 {
+            text-align: center;
+            color: #222;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 25px;
+        }
+
+        .progress {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            color: #555;
+            font-weight: bold;
+        }
+
+        .question {
+            font-size: 21px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #222;
+        }
+
+        .option {
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            background: white;
+            text-align: left;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .option:hover {
+            background: #f0f4ff;
+            border-color: #667eea;
+        }
+
+        /* Correct answer */
+        .correct {
+            background-color: #28a745 !important;
+            color: white !important;
+            border-color: #28a745 !important;
+        }
+
+        /* Wrong answer */
+        .wrong {
+            background-color: #dc3545 !important;
+            color: white !important;
+            border-color: #dc3545 !important;
+        }
+
+        .option:disabled {
+            cursor: not-allowed;
+        }
+
+        #nextBtn {
+            display: none;
+            width: 100%;
+            margin-top: 20px;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            background: #667eea;
+            color: white;
+            font-size: 17px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        #nextBtn:hover {
+            background: #5568d8;
+        }
+
+        .result {
+            display: none;
+            text-align: center;
+        }
+
+        .result h2 {
+            color: #222;
+            margin-bottom: 15px;
+        }
+
+        .score {
+            font-size: 40px;
+            font-weight: bold;
+            color: #28a745;
+            margin: 20px 0;
+        }
+
+        #restartBtn {
+            padding: 14px 30px;
+            border: none;
+            border-radius: 10px;
+            background: #667eea;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        #restartBtn:hover {
+            background: #5568d8;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="quiz-container">
+
+    <div id="quiz">
+
+        <h1>Java Basics Quiz</h1>
+        <p class="subtitle">Test your Java programming knowledge</p>
+
+        <div class="progress">
+            <span id="questionNumber">Question 1 of 7</span>
+            <span id="scoreText">Score: 0</span>
+        </div>
+
+        <div id="question" class="question"></div>
+
+        <div id="options"></div>
+
+        <button id="nextBtn" onclick="nextQuestion()">
+            Next Question →
+        </button>
+
+    </div>
+
+
+    <div id="result" class="result">
+
+        <h2>Quiz Completed! 🎉</h2>
+
+        <div class="score" id="finalScore">
+            0 / 7
+        </div>
+
+        <p id="resultMessage"></p>
+
+        <br>
+
+        <button id="restartBtn" onclick="restartQuiz()">
+            Try Again
+        </button>
+
+    </div>
+
+</div>
+
+
+<script>
+
+    const questions = [
+
+        {
+            question: "1. Which keyword is used to create a class in Java?",
+            options: [
+                "function",
+                "class",
+                "define",
+                "struct"
+            ],
+            answer: 1
+        },
+
+        {
+            question: "2. Which method is the starting point of a Java program?",
+            options: [
+                "start()",
+                "run()",
+                "main()",
+                "begin()"
+            ],
+            answer: 2
+        },
+
+        {
+            question: "3. Which data type is used to store whole numbers in Java?",
+            options: [
+                "float",
+                "String",
+                "int",
+                "boolean"
+            ],
+            answer: 2
+        },
+
+        {
+            question: "4. Which keyword is used to create an object in Java?",
+            options: [
+                "new",
+                "create",
+                "object",
+                "class"
+            ],
+            answer: 0
+        },
+
+        {
+            question: "5. Which symbol is used to end a statement in Java?",
+            options: [
+                ".",
+                ":",
+                ";",
+                ","
+            ],
+            answer: 2
+        },
+
+        {
+            question: "6. Which keyword is used for inheritance in Java?",
+            options: [
+                "inherits",
+                "extends",
+                "implements",
+                "inherit"
+            ],
+            answer: 1
+        },
+
+        {
+            question: "7. Which data type stores true or false values?",
+            options: [
+                "int",
+                "char",
+                "boolean",
+                "double"
+            ],
+            answer: 2
+        }
+
+    ];
+
+
+    let currentQuestion = 0;
+    let score = 0;
+
+
+    const questionElement =
+        document.getElementById("question");
+
+    const optionsElement =
+        document.getElementById("options");
+
+    const nextButton =
+        document.getElementById("nextBtn");
+
+    const questionNumber =
+        document.getElementById("questionNumber");
+
+    const scoreText =
+        document.getElementById("scoreText");
+
+
+    function loadQuestion() {
+
+        const current = questions[currentQuestion];
+
+        questionElement.textContent = current.question;
+
+        questionNumber.textContent =
+            `Question ${currentQuestion + 1} of ${questions.length}`;
+
+        scoreText.textContent =
+            `Score: ${score}`;
+
+        optionsElement.innerHTML = "";
+
+        nextButton.style.display = "none";
+
+
+        current.options.forEach((option, index) => {
+
+            const button = document.createElement("button");
+
+            button.textContent = option;
+
+            button.classList.add("option");
+
+            button.onclick = () => checkAnswer(button, index);
+
+            optionsElement.appendChild(button);
+
+        });
+
+    }
+
+
+    function checkAnswer(selectedButton, selectedIndex) {
+
+        const correctAnswer =
+            questions[currentQuestion].answer;
+
+        const allButtons =
+            document.querySelectorAll(".option");
+
+
+        // Disable all buttons after selecting an answer
+        allButtons.forEach(button => {
+            button.disabled = true;
+        });
+
+
+        if (selectedIndex === correctAnswer) {
+
+            // Correct answer = GREEN
+            selectedButton.classList.add("correct");
+
+            score++;
+
+            scoreText.textContent =
+                `Score: ${score}`;
+
+        } else {
+
+            // Wrong answer = RED
+            selectedButton.classList.add("wrong");
+
+            // Show the correct answer in GREEN
+            allButtons[correctAnswer].classList.add("correct");
+
+        }
+
+
+        nextButton.style.display = "block";
+
+
+        if (currentQuestion === questions.length - 1) {
+
+            nextButton.textContent = "View Result";
+
+        }
+
+    }
+
+
+    function nextQuestion() {
+
+        currentQuestion++;
+
+        if (currentQuestion < questions.length) {
+
+            loadQuestion();
+
+        } else {
+
+            showResult();
+
+        }
+
+    }
+
+
+    function showResult() {
+
+        document.getElementById("quiz").style.display = "none";
+
+        document.getElementById("result").style.display = "block";
+
+        document.getElementById("finalScore").textContent =
+            `${score} / ${questions.length}`;
+
+
+        let message = "";
+
+        if (score === 7) {
+
+            message = "Excellent! You got all answers correct! 🏆";
+
+        } else if (score >= 5) {
+
+            message = "Great job! Keep practicing to improve further! 👍";
+
+        } else if (score >= 3) {
+
+            message = "Good attempt! Revise Java basics and try again. 📚";
+
+        } else {
+
+            message = "Keep practicing! You can improve your score. 💪";
+
+        }
+
+
+        document.getElementById("resultMessage").textContent =
+            message;
+
+    }
+
+
+    function restartQuiz() {
+
+        currentQuestion = 0;
+
+        score = 0;
+
+        document.getElementById("result").style.display = "none";
+
+        document.getElementById("quiz").style.display = "block";
+
+        loadQuestion();
+
+    }
+
+
+    // Start quiz
+    loadQuestion();
+
+</script>
+
+</body>
+</html>
